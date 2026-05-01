@@ -3,7 +3,7 @@ import { Zap, Users, Target, Download, Search, List } from "lucide-react";
 const features = [
   {
     icon: Zap,
-    title: "Lightning Fast Bulk Opens",
+    title: "Lightning Fast Bulk Opening",
     description: "Open 100+ LinkedIn profiles in under a minute with smart delay management",
   },
   {
