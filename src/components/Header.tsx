@@ -66,9 +66,11 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
           <div className="flex items-center gap-2 group shrink-0 min-w-0">
             <a href="/" className="flex items-center gap-2 group shrink-0 min-w-0">
               <div className="bg-primary/10 p-1 rounded-lg transition-all group-hover:rotate-12 group-hover:scale-110 shrink-0">
-                <img 
-                  src="/favicon.ico" 
-                  alt="Logo" 
+                <img
+                  src="/favicon.svg"
+                  alt="LinkedIn Opener Pro logo"
+                  width={20}
+                  height={20}
                   className="w-5 h-5 object-contain"
                 />
               </div>

@@ -1,16 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8597674308771036"
-     crossorigin="anonymous"></script>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N2D12MLMG3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-N2D12MLMG3');
-  </script>
+  <!-- AdSense + Google Analytics are deferred until first interaction (or
+       shortly after load) to keep them off the critical path. See the
+       loader script before </body>. -->
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,7 +20,7 @@
   <meta name="google-site-verification" content="Uk3At5gc6OYWMn1zmULpfwsM7qycNYAYt_HFoC2_tFw" />
   
   <!-- Favicon & Theme -->
-  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
   <meta name="theme-color" content="#0A66C2" />
 
@@ -87,5 +80,57 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
+
+  <!-- Deferred third-party loader: AdSense + Google Analytics.
+       Loads on the first user interaction, or 3.5s after window load —
+       whichever comes first. Keeps ~2s of third-party JS off the
+       critical path so it no longer blocks FCP/LCP/TBT. -->
+  <script>
+    (function () {
+      var ADSENSE = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8597674308771036";
+      var GA_ID = "G-N2D12MLMG3";
+      var loaded = false;
+
+      function loadThirdParty() {
+        if (loaded) return;
+        loaded = true;
+
+        // Google Analytics
+        var ga = document.createElement("script");
+        ga.async = true;
+        ga.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+        document.head.appendChild(ga);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag("js", new Date());
+        window.gtag("config", GA_ID);
+
+        // Google AdSense
+        var ad = document.createElement("script");
+        ad.async = true;
+        ad.crossOrigin = "anonymous";
+        ad.src = ADSENSE;
+        document.head.appendChild(ad);
+      }
+
+      var events = ["scroll", "mousemove", "touchstart", "keydown", "pointerdown"];
+      function onInteract() {
+        events.forEach(function (e) { window.removeEventListener(e, onInteract); });
+        loadThirdParty();
+      }
+      events.forEach(function (e) {
+        window.addEventListener(e, onInteract, { passive: true });
+      });
+
+      // Fallback so scripts still load on a no-interaction visit.
+      if (document.readyState === "complete") {
+        setTimeout(loadThirdParty, 3500);
+      } else {
+        window.addEventListener("load", function () {
+          setTimeout(loadThirdParty, 3500);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
