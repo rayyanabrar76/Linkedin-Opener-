@@ -36,6 +36,10 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const ddgBang = (query: string) =>
   `https://duckduckgo.com/?q=!ducky+${encodeURIComponent(query)}`;
 
+/** Slugify a company/person name for a LinkedIn profile path: lowercase, spaces → hyphens */
+const slugify = (name: string) =>
+  name.trim().toLowerCase().replace(/\s+/g, "-");
+
 const makeBlobUrl = (targetUrl: string): string => {
   const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${targetUrl}"></head></html>`;
   return URL.createObjectURL(new Blob([html], { type: "text/html" }));
@@ -307,57 +311,85 @@ const Dashboard = () => {
   };
 
   // ── Export ──────────────────────────────────────────────────────────────────
-  const exportAllTSV = async () => {
+  // Builds a real .xlsx with native, clickable hyperlinks via SheetJS — opens
+  // directly in Excel/Google Sheets, no copy-paste step required.
+  const exportAllXLSX = async () => {
     const valid = urls.map((u) => u.trim()).filter(Boolean);
     if (valid.length === 0) {
       toast.error("No data to export");
       return;
     }
+    if (valid.length > MAX_ITEMS) {
+      toast.error(`Too many items! Please paste ${MAX_ITEMS} or fewer at a time.`);
+      return;
+    }
 
-    toast.info("Generating spreadsheet data...");
+    const XLSX = await import("xlsx");
+
+    toast.info("Generating spreadsheet...");
     setIsOpening(true);
     setProgress(0);
 
-    const makeLink = (url: string, label: string) =>
-      url ? `=HYPERLINK("${url}","${label}")` : "";
+    type LeadRow = {
+      companyName: string;
+      website: string;
+      linkedinCompany: string;
+      ceoLinkedin: string;
+    };
 
-    const results: CollectedItem[] = [];
+    const rows: LeadRow[] = [];
 
     for (let i = 0; i < valid.length; i++) {
       const parsed = parseItem(valid[i]);
+      const name = parsed.companyName || valid[i];
 
-      const website = parsed.website || ddgBang(`${parsed.companyName} official site`);
-      const linkedinCompany = parsed.linkedinCompany || ddgBang(`${parsed.companyName} LinkedIn company page`);
-      const ceoLinkedin = parsed.ceoLinkedin || ddgBang(`CEO of ${parsed.companyName} LinkedIn`);
-
-      results.push({
-        companyName: parsed.companyName,
-        website: makeLink(website, "Website"),
-        linkedinCompany: makeLink(linkedinCompany, "LinkedIn Company"),
-        ceoLinkedin: makeLink(ceoLinkedin, "CEO LinkedIn"),
+      rows.push({
+        companyName: name,
+        website:
+          parsed.website ||
+          `https://duckduckgo.com/?q=!ducky+${encodeURIComponent(name)}+official+site`,
+        linkedinCompany:
+          parsed.linkedinCompany ||
+          `https://duckduckgo.com/?q=!ducky+${encodeURIComponent(name)}+LinkedIn+company+page`,
+        ceoLinkedin: parsed.ceoLinkedin || `https://linkedin.com/in/${slugify(name)}`,
       });
 
       setProgress(Math.round(((i + 1) / valid.length) * 100));
       await sleep(EXPORT_DELAY_MS);
     }
 
-    const TAB = "\t";
-    const header = ["Company Name", "Website", "LinkedIn Company Page", "CEO LinkedIn Profile"].join(TAB);
-    const rows = results.map((r) => [r.companyName, r.website, r.linkedinCompany, r.ceoLinkedin].join(TAB)).join("\n");
-    const tsv = `${header}\n${rows}`;
+    // Header row + one display string per link cell; hyperlinks are patched in below.
+    const ws = XLSX.utils.aoa_to_sheet([
+      ["Company Name", "Website", "LinkedIn Company Page", "CEO LinkedIn Profile"],
+      ...rows.map((r) => [r.companyName, "Website", "LinkedIn Company", "CEO LinkedIn"]),
+    ]);
 
-    const blob = new Blob([tsv], { type: "text/plain;charset=utf-8;" });
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = blobUrl;
-    a.download = `linkedin-leads-${new Date().toISOString().slice(0, 10)}.txt`;
-    a.click();
-    URL.revokeObjectURL(blobUrl);
+    // Attach native hyperlinks to columns B (website), C (company), D (CEO).
+    rows.forEach((r, i) => {
+      const excelRow = i + 2; // 1-indexed worksheet row, +1 for header
+      const link = (target: string, tooltip: string) => ({
+        l: { Target: target, Tooltip: tooltip },
+      });
+      Object.assign(ws[`B${excelRow}`], link(r.website, `Open ${r.companyName} website`));
+      Object.assign(ws[`C${excelRow}`], link(r.linkedinCompany, `${r.companyName} on LinkedIn`));
+      Object.assign(ws[`D${excelRow}`], link(r.ceoLinkedin, `CEO of ${r.companyName} on LinkedIn`));
+    });
 
-    setCollectedData((prev) => mergeCollected(prev, results));
+    ws["!cols"] = [{ wch: 30 }, { wch: 22 }, { wch: 25 }, { wch: 22 }];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Leads");
+    XLSX.writeFile(wb, "linkedin-leads.xlsx");
+
+    setCollectedData((prev) =>
+      mergeCollected(
+        prev,
+        rows.map((r) => ({ ...r })),
+      ),
+    );
     setIsOpening(false);
     setProgress(0);
-    toast.success(`Exported ${results.length} leads! Paste the .txt content into Google Sheets cell A1.`);
+    toast.success(`Exported ${rows.length} leads to linkedin-leads.xlsx`);
   };
 
   // ── Clear ───────────────────────────────────────────────────────────────────
@@ -411,13 +443,13 @@ const Dashboard = () => {
                 Open All CEOs
               </Button>
               <Button
-                onClick={exportAllTSV}
+                onClick={exportAllXLSX}
                 disabled={isOpening || !hasValidInput}
                 variant="outline"
                 className="shadow-lg w-full md:w-auto"
               >
                 <Sparkles className="w-4 h-4 mr-2 shrink-0" />
-                Export TSV
+                Export Excel
               </Button>
               <Button onClick={clear} variant="outline" className="w-full md:w-auto">
                 <Trash2 className="w-4 h-4 mr-2 shrink-0" />
@@ -587,7 +619,7 @@ const Dashboard = () => {
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-3 sm:mt-4 border-t border-border pt-3 sm:pt-4">
-                💡 Final Step: Click Export TSV, then copy the content of the downloaded .txt file and paste it into cell A1 of your Google Sheet.
+                💡 Final Step: Click Export Excel to download an .xlsx file that opens directly in Excel or Google Sheets — with clickable links, no copy-paste needed.
               </p>
             </div>
           </div>

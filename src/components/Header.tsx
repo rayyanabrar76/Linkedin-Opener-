@@ -137,6 +137,7 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               className="rounded-full w-9 h-9 border border-transparent hover:bg-primary/5 hover:border-border transition-all shrink-0"
             >
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -147,7 +148,7 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
             </Button>
 
             {/* Mobile Menu Toggle */}
-            <Button variant="ghost" size="icon" className="md:hidden rounded-lg w-9 h-9 shrink-0" onClick={() => setMobileOpen(!mobileOpen)}>
+            <Button variant="ghost" size="icon" aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={mobileOpen} className="md:hidden rounded-lg w-9 h-9 shrink-0" onClick={() => setMobileOpen(!mobileOpen)}>
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
