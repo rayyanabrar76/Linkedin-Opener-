@@ -154,8 +154,10 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
                 {isSubscribed && (
                   <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-semibold">Pro</span>
                 )}
-                <span className="text-xs text-muted-foreground max-w-[100px] truncate">{user.email}</span>
-                <Button size="sm" variant="ghost" onClick={signOut} className="rounded-full px-3 text-sm">
+                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary shrink-0">
+                  {user.email?.[0].toUpperCase()}
+                </div>
+                <Button size="sm" variant="ghost" onClick={signOut} className="rounded-full px-3 text-sm" title="Sign out">
                   <LogOut className="w-3.5 h-3.5" />
                 </Button>
               </div>
