@@ -43,8 +43,8 @@ const UpgradeModal = ({ open, onClose }: Props) => {
           {[
             "Find CEOs of any company on LinkedIn",
             "Bulk CEO search for 200 companies at once",
-            "CEO links included in Excel export",
-            "Unlimited searches, forever",
+            "Export leads to Excel with clickable links",
+            "Unlimited searches and exports, forever",
           ].map((feat) => (
             <div key={feat} className="flex items-center gap-2 text-sm">
               <Check className="w-4 h-4 text-primary shrink-0" />

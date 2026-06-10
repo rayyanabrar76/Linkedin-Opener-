@@ -320,6 +320,7 @@ const Dashboard = () => {
   // Builds a real .xlsx with native, clickable hyperlinks via SheetJS — opens
   // directly in Excel/Google Sheets, no copy-paste step required.
   const exportAllXLSX = async () => {
+    if (!isSubscribed) { setShowUpgrade(true); return; }
     const valid = urls.map((u) => u.trim()).filter(Boolean);
     if (valid.length === 0) {
       toast.error("No data to export");
@@ -459,7 +460,11 @@ const Dashboard = () => {
                 variant="outline"
                 className="shadow-lg w-full md:w-auto"
               >
-                <Sparkles className="w-4 h-4 mr-2 shrink-0" />
+                {isSubscribed ? (
+                  <Sparkles className="w-4 h-4 mr-2 shrink-0" />
+                ) : (
+                  <Lock className="w-4 h-4 mr-2 shrink-0" />
+                )}
                 Export Excel
               </Button>
               <Button onClick={clear} variant="outline" className="w-full md:w-auto">
