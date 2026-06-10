@@ -351,7 +351,7 @@ const Dashboard = () => {
         linkedinCompany:
           parsed.linkedinCompany ||
           `https://duckduckgo.com/?q=!ducky+${encodeURIComponent(name)}+LinkedIn+company+page`,
-        ceoLinkedin: parsed.ceoLinkedin || `https://linkedin.com/in/${slugify(name)}`,
+        ceoLinkedin: parsed.ceoLinkedin || ddgBang(`CEO of ${name} site:linkedin.com`),
       });
 
       setProgress(Math.round(((i + 1) / valid.length) * 100));
