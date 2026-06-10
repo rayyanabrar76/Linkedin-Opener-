@@ -440,7 +440,7 @@ const Dashboard = () => {
                 className="shadow-lg w-full md:w-auto"
               >
                 <Building2 className="w-4 h-4 mr-2 shrink-0" />
-                Open All CEOs
+                {urls.filter(u => u.trim()).length <= 1 ? "Find CEO" : "Find CEOs"}
               </Button>
               <Button
                 onClick={exportAllXLSX}
