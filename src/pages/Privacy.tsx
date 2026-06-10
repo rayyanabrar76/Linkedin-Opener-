@@ -1,7 +1,7 @@
-const SITE_NAME = "LinkedIn Bulk Opener";
-const SITE_URL = "https://profileopener.netlify.app/"; // ← update to your actual domain
-const CONTACT_EMAIL = "rayyanabrar76@gmail.com"; // ← update
-const EFFECTIVE_DATE = "May 1, 2025";
+const SITE_NAME = "LinkedIn Opener Pro";
+const SITE_URL = "https://profileopener.netlify.app/";
+const CONTACT_EMAIL = "hassanabrar2022@gmail.com";
+const EFFECTIVE_DATE = "June 11, 2026";
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="mb-10">
@@ -16,7 +16,6 @@ const PrivacyPolicy = () => {
       <div className="w-full px-4 sm:px-8 lg:px-16">
         <div className="glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-12 shadow-2xl">
 
-          {/* Header */}
           <div className="mb-10">
             <a href="/" className="text-sm text-primary hover:underline mb-6 inline-block">
               ← Back to {SITE_NAME}
@@ -25,138 +24,99 @@ const PrivacyPolicy = () => {
             <p className="text-sm text-muted-foreground">Effective date: {EFFECTIVE_DATE}</p>
           </div>
 
-          {/* Intro */}
           <Section title="Overview">
             <p>
               {SITE_NAME} ("we", "us", or "our") operates {SITE_URL} (the "Site"). This Privacy
-              Policy explains how we collect, use, and share information when you visit our Site.
+              Policy explains what information we collect, how we use it, and how we protect it.
               By using the Site you agree to the practices described below.
             </p>
             <p>
-              We are committed to transparency. If anything in this policy is unclear, please
-              contact us at <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
+              If anything in this policy is unclear, please contact us at{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
             </p>
           </Section>
 
           <Section title="Information We Collect">
             <p>
-              <strong className="text-foreground">Information you provide:</strong> We do not
-              require you to create an account or submit personal details to use the Site. Any
-              LinkedIn URLs or company names you paste into the tool are processed entirely in
-              your browser and are never transmitted to our servers.
+              <strong className="text-foreground">Account information:</strong> When you sign in
+              with Google, we receive your name, email address, and profile picture from Google.
+              This information is stored securely via Supabase and is used solely to manage your
+              account and subscription.
+            </p>
+            <p>
+              <strong className="text-foreground">Tool usage data:</strong> Any LinkedIn URLs or
+              company names you paste into the tool are processed entirely in your browser and are
+              never transmitted to our servers.
+            </p>
+            <p>
+              <strong className="text-foreground">Payment information:</strong> Payments are
+              processed by Stripe. We do not store your credit card number or payment details.
+              Stripe may collect and store payment information in accordance with their own
+              privacy policy.
             </p>
             <p>
               <strong className="text-foreground">Automatically collected information:</strong>{" "}
-              Like most websites, our hosting provider and analytics services automatically collect
-              standard log data when you visit, including your IP address, browser type, operating
-              system, referring URLs, pages viewed, and the date and time of your visit.
-            </p>
-            <p>
-              <strong className="text-foreground">Cookies and similar technologies:</strong> We
-              and our third-party partners (including Google) use cookies, web beacons, and similar
-              tracking technologies to operate the Site, measure traffic, and serve relevant
-              advertisements. See the "Advertising" section below for full details.
+              Our hosting provider may automatically collect standard log data including your IP
+              address, browser type, operating system, pages viewed, and the date and time of
+              your visit.
             </p>
           </Section>
 
           <Section title="How We Use Your Information">
             <p>We use the information collected to:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Create and manage your account</li>
+              <li>Verify your subscription status and grant access to Pro features</li>
+              <li>Process payments via Stripe</li>
+              <li>Respond to support requests</li>
               <li>Operate, maintain, and improve the Site</li>
-              <li>Understand how visitors use the Site (analytics)</li>
-              <li>Display advertisements through Google AdSense</li>
               <li>Detect and prevent abuse or fraudulent activity</li>
               <li>Comply with legal obligations</li>
             </ul>
+            <p>We do not sell your personal information to third parties.</p>
+          </Section>
+
+          <Section title="Google Sign-In">
             <p>
-              We do not sell your personal information to third parties.
+              We use Google OAuth for authentication. When you sign in with Google, we receive
+              limited profile information (name, email, profile picture) as permitted by Google's
+              OAuth scopes. We do not access your Google contacts, Gmail, Google Drive, or any
+              other Google services.
+            </p>
+            <p>
+              You can revoke our access to your Google account at any time via your{" "}
+              <a
+                href="https://myaccount.google.com/permissions"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Google Account permissions page
+              </a>.
             </p>
           </Section>
 
-          {/* ── AdSense-Required Disclosure ── */}
-          <Section title="Advertising — Google AdSense">
+          <Section title="Payments and Subscriptions">
             <p>
-              We use Google AdSense to display advertisements on this Site. Google AdSense is a
-              third-party advertising service provided by Google LLC. Google uses cookies to
-              serve ads based on your prior visits to this Site and other sites on the internet.
+              Subscription payments are handled by Stripe, Inc. When you subscribe, you will be
+              redirected to a Stripe-hosted checkout page. We receive confirmation of your payment
+              from Stripe via a secure webhook, which we use to activate your subscription. We
+              never see or store your full payment card details.
             </p>
             <p>
-              Google's use of advertising cookies enables it and its partners to serve ads to you
-              based on your visit to our Site and/or other sites on the Internet. You may opt out
-              of personalised advertising by visiting{" "}
-              <a
-                href="https://www.google.com/settings/ads"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Google Ads Settings
-              </a>{" "}
-              or by visiting{" "}
-              <a
-                href="https://www.aboutads.info/choices/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                www.aboutads.info
-              </a>.
-            </p>
-            <p>
-              For more information on how Google collects and processes data, please review
-              Google's Privacy Policy at{" "}
-              <a
-                href="https://policies.google.com/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                policies.google.com/privacy
-              </a>.
-            </p>
-            <p>
-              Third-party vendors, including Google, use cookies to serve ads based on a user's
-              prior visits to our Site or to other websites. The use of advertising cookies by
-              Google enables Google and its partners to serve ads based on your visit here and
-              elsewhere on the internet.
-            </p>
-          </Section>
-
-          <Section title="Analytics">
-            <p>
-              We may use Google Analytics or similar services to understand how visitors interact
-              with the Site. These services collect information such as how often users visit,
-              which pages they visit, and what other sites they visited before coming to our Site.
-              We use this data only to improve the Site. Google Analytics collects only the IP
-              address assigned to you on the date you visit, not your name or other identifying
-              information.
-            </p>
-            <p>
-              You can opt out of Google Analytics by installing the{" "}
-              <a
-                href="https://tools.google.com/dlpage/gaoptout"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Google Analytics Opt-out Browser Add-on
-              </a>.
+              For questions about billing or to cancel your subscription, contact us at{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
             </p>
           </Section>
 
           <Section title="Cookies">
             <p>
-              Cookies are small text files stored on your device by your browser. We use cookies
-              to:
+              We use cookies and similar technologies to keep you signed in and to operate the
+              Site correctly. We do not use cookies for advertising purposes.
             </p>
-            <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Keep the Site functioning correctly</li>
-              <li>Measure site traffic and usage patterns</li>
-              <li>Serve relevant advertisements via Google AdSense</li>
-            </ul>
             <p>
-              You can control cookies through your browser settings. Disabling cookies may affect
-              the functionality of the Site and the relevance of advertisements shown to you.
+              You can control cookies through your browser settings. Disabling cookies may prevent
+              you from staying signed in.
             </p>
           </Section>
 
@@ -164,26 +124,35 @@ const PrivacyPolicy = () => {
             <p>We may share information with:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>
-                <strong className="text-foreground">Service providers</strong> — hosting, analytics,
-                and advertising partners (e.g., Google) that help us operate the Site
+                <strong className="text-foreground">Supabase</strong> — our database and
+                authentication provider, which stores your account and subscription data
               </li>
               <li>
-                <strong className="text-foreground">Legal authorities</strong> — when required by
-                law, court order, or to protect the safety of our users or the public
+                <strong className="text-foreground">Stripe</strong> — our payment processor,
+                which handles subscription billing
               </li>
               <li>
-                <strong className="text-foreground">Business transfers</strong> — in the event of a
-                merger, acquisition, or sale of assets, your information may be transferred
+                <strong className="text-foreground">Legal authorities</strong> — when required
+                by law, court order, or to protect the safety of users or the public
               </li>
             </ul>
-            <p>We do not sell or rent your personal information to any third party for marketing purposes.</p>
+            <p>We do not sell or rent your personal information to any third party.</p>
+          </Section>
+
+          <Section title="Data Retention">
+            <p>
+              We retain your account information for as long as your account is active. If you
+              request deletion of your account, we will delete your personal data within 30 days,
+              except where retention is required by law.
+            </p>
           </Section>
 
           <Section title="Children's Privacy">
             <p>
-              The Site is not directed to children under the age of 13. We do not knowingly collect
-              personal information from children under 13. If you believe we have inadvertently
-              collected such information, please contact us and we will promptly delete it.
+              The Site is not directed to children under the age of 13. We do not knowingly
+              collect personal information from children under 13. If you believe we have
+              inadvertently collected such information, please contact us and we will promptly
+              delete it.
             </p>
           </Section>
 
@@ -192,7 +161,7 @@ const PrivacyPolicy = () => {
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>Access the personal information we hold about you</li>
               <li>Request correction or deletion of your personal information</li>
-              <li>Opt out of personalised advertising (see the Advertising section above)</li>
+              <li>Object to or restrict our processing of your data</li>
               <li>Lodge a complaint with your local data protection authority</li>
             </ul>
             <p>
@@ -214,16 +183,13 @@ const PrivacyPolicy = () => {
           <Section title="Changes to This Policy">
             <p>
               We may update this Privacy Policy from time to time. When we do, we will revise the
-              "Effective date" at the top of this page. We encourage you to review this policy
-              periodically. Continued use of the Site after any changes constitutes your acceptance
-              of the updated policy.
+              "Effective date" at the top of this page. Continued use of the Site after any
+              changes constitutes your acceptance of the updated policy.
             </p>
           </Section>
 
           <Section title="Contact Us">
-            <p>
-              If you have any questions or concerns about this Privacy Policy, please contact us:
-            </p>
+            <p>If you have any questions about this Privacy Policy, please contact us:</p>
             <p>
               <strong className="text-foreground">Email:</strong>{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">
