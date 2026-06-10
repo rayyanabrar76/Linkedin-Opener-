@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { 
-  Moon, 
-  Sun, 
-  Menu, 
-  X, 
-  Sparkles, 
-  LayoutDashboard, 
-  Zap, 
-  MousePointerClick, 
-  Search, 
+import {
+  Moon,
+  Sun,
+  Menu,
+  X,
+  Sparkles,
+  LayoutDashboard,
+  Zap,
+  MousePointerClick,
+  Search,
   FileDown,
-  ArrowRight
+  ArrowRight,
+  LogOut,
+  LogIn
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -24,6 +27,7 @@ import {
 
 const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
   const { theme, setTheme } = useTheme();
+  const { user, isSubscribed, signInWithGoogle, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   
@@ -145,9 +149,21 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </Button>
             
-            <Button size="sm" onClick={onGetStarted} className="rounded-full px-4 hidden sm:flex shadow-md font-semibold hover:shadow-primary/20 transition-all active:scale-95 text-sm">
-              Get Started
-            </Button>
+            {user ? (
+              <div className="hidden sm:flex items-center gap-2">
+                {isSubscribed && (
+                  <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-semibold">Pro</span>
+                )}
+                <span className="text-xs text-muted-foreground max-w-[100px] truncate">{user.email}</span>
+                <Button size="sm" variant="ghost" onClick={signOut} className="rounded-full px-3 text-sm">
+                  <LogOut className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            ) : (
+              <Button size="sm" onClick={signInWithGoogle} className="rounded-full px-4 hidden sm:flex shadow-md font-semibold hover:shadow-primary/20 transition-all active:scale-95 text-sm gap-2">
+                <LogIn className="w-3.5 h-3.5" /> Sign In
+              </Button>
+            )}
 
             {/* Mobile Menu Toggle */}
             <Button variant="ghost" size="icon" aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={mobileOpen} className="md:hidden rounded-lg w-9 h-9 shrink-0" onClick={() => setMobileOpen(!mobileOpen)}>

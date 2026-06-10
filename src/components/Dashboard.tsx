@@ -1,7 +1,9 @@
 import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Building2, User, Sparkles, Trash2 } from "lucide-react";
+import { Building2, User, Sparkles, Trash2, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import UpgradeModal from "./UpgradeModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type CollectedItem = {
@@ -144,11 +146,13 @@ const mergeCollected = (prev: CollectedItem[], incoming: CollectedItem[]): Colle
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const Dashboard = () => {
+  const { isSubscribed } = useAuth();
   const [urls, setUrls] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
   const [isOpening, setIsOpening] = useState(false);
   const [collectedData, setCollectedData] = useState<CollectedItem[]>([]);
   const [tabsOpened, setTabsOpened] = useState(0);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const editableRef = useRef<HTMLDivElement>(null);
 
   // ── URL Extraction ──────────────────────────────────────────────────────────
@@ -249,6 +253,7 @@ const Dashboard = () => {
 
   // ── CEO Open Logic ──────────────────────────────────────────────────────────
   const openAllCEOs = async () => {
+    if (!isSubscribed) { setShowUpgrade(true); return; }
     const valid = urls.map((u) => u.trim()).filter(Boolean);
     if (valid.length === 0) {
       toast.error("No company links or names found");
@@ -292,6 +297,7 @@ const Dashboard = () => {
 
   // ── Single Item Actions ─────────────────────────────────────────────────────
   const openSingleCEO = (item: string) => {
+    if (!isSubscribed) { setShowUpgrade(true); return; }
     const parsed = parseItem(item);
     openAndRevoke(makeBlobUrl(ddgBang(`CEO of ${parsed.companyName} site:linkedin.com`)), true);
     toast.success(`Searching CEO of ${parsed.companyName}`);
@@ -407,6 +413,7 @@ const Dashboard = () => {
 
   // ─── Render ─────────────────────────────────────────────────────────────────
   return (
+    <>
     <section
       id="dashboard"
       className="min-h-screen py-16 sm:py-31 bg-gradient-to-b from-secondary/20 to-background flex justify-center items-start sm:items-center"
@@ -439,7 +446,11 @@ const Dashboard = () => {
                 variant="secondary"
                 className="shadow-lg w-full md:w-auto"
               >
-                <Building2 className="w-4 h-4 mr-2 shrink-0" />
+                {isSubscribed ? (
+                  <Building2 className="w-4 h-4 mr-2 shrink-0" />
+                ) : (
+                  <Lock className="w-4 h-4 mr-2 shrink-0" />
+                )}
                 {urls.filter(u => u.trim()).length <= 1 ? "Find CEO" : "Find CEOs"}
               </Button>
               <Button
@@ -626,6 +637,9 @@ const Dashboard = () => {
         </div>
       </div>
     </section>
+
+    <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
+    </>
   );
 };
 
