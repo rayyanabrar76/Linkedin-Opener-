@@ -1,6 +1,6 @@
 const SITE_NAME = "LinkedIn Opener Pro";
 const SITE_URL = "https://profileopener.netlify.app/";
-const CONTACT_EMAIL = "hassanabrar2022@gmail.com";
+const CONTACT_EMAIL = "rayyanabrar76@gmail.com";
 const EFFECTIVE_DATE = "June 11, 2026";
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
