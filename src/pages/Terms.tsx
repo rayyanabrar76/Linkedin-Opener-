@@ -60,19 +60,21 @@ const TermsOfService = () => {
             </p>
           </Section>
 
-          <Section title="Subscriptions and Payments">
+          <Section title="Payments and Pro Access">
             <p>
-              Certain features of {SITE_NAME} (including the CEO Finder) require a paid
-              subscription at $0.99 per month. Payments are processed securely by Stripe, Inc.
+              Certain features of {SITE_NAME} (including the CEO Finder and Excel Export) require
+              a one-time payment of $0.99 for lifetime Pro access. Payments are processed securely
+              by Paddle.com, who acts as the merchant of record for all transactions.
             </p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Subscriptions are billed monthly and renew automatically</li>
-              <li>You may cancel at any time; cancellation takes effect at the end of your current billing period</li>
-              <li>We do not offer refunds for partial subscription periods</li>
-              <li>We reserve the right to change subscription pricing with reasonable notice</li>
+              <li>Pro access is granted immediately after successful payment</li>
+              <li>This is a one-time payment — no recurring charges</li>
+              <li>We offer a 7-day refund policy — contact us within 7 days of purchase for a full refund</li>
+              <li>Refund requests after 7 days will not be accepted</li>
+              <li>We reserve the right to change pricing for new customers with reasonable notice</li>
             </ul>
             <p>
-              For billing questions or to request a cancellation, contact us at{" "}
+              For billing questions or refund requests, contact us at{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
             </p>
           </Section>

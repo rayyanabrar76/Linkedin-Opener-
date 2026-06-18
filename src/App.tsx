@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 const BestTools = lazy(() => import("@/pages/BestTools"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
 const Terms = lazy(() => import("@/pages/Terms"));
+const Refund = lazy(() => import("@/pages/Refund"));
 const About = lazy(() => import("@/pages/About"));
 const Contact = lazy(() => import("@/pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -85,6 +86,7 @@ const App = () => (
             {/* Legal Routes */}
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/refund" element={<Refund />} />
 
             {/* Catch-all 404 Route */}
             <Route path="*" element={<NotFound />} />

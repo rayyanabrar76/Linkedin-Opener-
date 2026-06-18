@@ -50,9 +50,10 @@ const PrivacyPolicy = () => {
             </p>
             <p>
               <strong className="text-foreground">Payment information:</strong> Payments are
-              processed by Stripe. We do not store your credit card number or payment details.
-              Stripe may collect and store payment information in accordance with their own
-              privacy policy.
+              processed by Paddle.com. Paddle acts as the merchant of record and handles all
+              payment processing. We do not store your credit card number or payment details.
+              Paddle may collect and store payment information in accordance with their own
+              privacy policy at paddle.com/legal/privacy.
             </p>
             <p>
               <strong className="text-foreground">Automatically collected information:</strong>{" "}
@@ -96,15 +97,16 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="Payments and Subscriptions">
+          <Section title="Payments">
             <p>
-              Subscription payments are handled by Stripe, Inc. When you subscribe, you will be
-              redirected to a Stripe-hosted checkout page. We receive confirmation of your payment
-              from Stripe via a secure webhook, which we use to activate your subscription. We
-              never see or store your full payment card details.
+              Payments are processed by Paddle.com, who acts as the merchant of record for all
+              transactions. When you purchase a Pro access, you will be redirected to a
+              Paddle-hosted checkout page. We receive confirmation of your payment from Paddle
+              via a secure webhook, which we use to activate your Pro access. We never see or
+              store your full payment card details.
             </p>
             <p>
-              For questions about billing or to cancel your subscription, contact us at{" "}
+              For questions about billing, contact us at{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
             </p>
           </Section>
@@ -128,8 +130,8 @@ const PrivacyPolicy = () => {
                 authentication provider, which stores your account and subscription data
               </li>
               <li>
-                <strong className="text-foreground">Stripe</strong> — our payment processor,
-                which handles subscription billing
+                <strong className="text-foreground">Paddle</strong> — our merchant of record
+                and payment processor, which handles all billing and transactions
               </li>
               <li>
                 <strong className="text-foreground">Legal authorities</strong> — when required
