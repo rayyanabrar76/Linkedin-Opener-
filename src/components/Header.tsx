@@ -12,13 +12,8 @@ import {
   Search,
   FileDown,
   ArrowRight,
-  LogOut,
-  LogIn,
-  CreditCard,
-  User as UserIcon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useAuth } from "@/contexts/AuthContext";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -26,18 +21,9 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
   const { theme, setTheme } = useTheme();
-  const { user, isSubscribed, signInWithGoogle, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   
@@ -159,50 +145,6 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </Button>
             
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="hidden sm:flex items-center gap-2 outline-none">
-                  {isSubscribed && (
-                    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-semibold">Pro</span>
-                  )}
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary cursor-pointer hover:bg-primary/30 transition-colors">
-                    {user.email?.[0].toUpperCase()}
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col gap-1">
-                      <p className="text-sm font-semibold">{user.user_metadata?.full_name ?? "My Account"}</p>
-                      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                      {isSubscribed && (
-                        <span className="text-xs text-primary font-semibold">Pro subscriber</span>
-                      )}
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {isSubscribed ? (
-                    <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => window.open("https://vendors.paddle.com/subscriptions", "_blank")}>
-                      <CreditCard className="w-4 h-4" />
-                      Manage Subscription
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem className="cursor-pointer gap-2 text-primary" onClick={() => window.dispatchEvent(new Event("openUpgradeModal"))}>
-                      <Sparkles className="w-4 h-4" />
-                      Upgrade to Pro
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer gap-2 text-destructive focus:text-destructive" onClick={signOut}>
-                    <LogOut className="w-4 h-4" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button size="sm" onClick={signInWithGoogle} className="rounded-full px-4 hidden sm:flex shadow-md font-semibold hover:shadow-primary/20 transition-all active:scale-95 text-sm gap-2">
-                <LogIn className="w-3.5 h-3.5" /> Sign In
-              </Button>
-            )}
 
             {/* Mobile Menu Toggle */}
             <Button variant="ghost" size="icon" aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={mobileOpen} className="md:hidden rounded-lg w-9 h-9 shrink-0" onClick={() => setMobileOpen(!mobileOpen)}>
