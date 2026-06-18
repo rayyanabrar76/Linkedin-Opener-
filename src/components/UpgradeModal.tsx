@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Building2, X, Sparkles, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/REPLACE_WITH_YOUR_LINK";
+const PAYMENT_LINK = "https://rayyans.lemonsqueezy.com/checkout/buy/31f59aba-0ec4-432d-bb74-fa8a398ae2eb";
 
 type Props = {
   open: boolean;
@@ -19,7 +19,7 @@ const UpgradeModal = ({ open, onClose }: Props) => {
       signInWithGoogle();
       return;
     }
-    window.open(`${STRIPE_PAYMENT_LINK}?prefilled_email=${encodeURIComponent(user.email ?? "")}`, "_blank");
+    window.open(`${PAYMENT_LINK}?checkout[email]=${encodeURIComponent(user.email ?? "")}`, "_blank");
   };
 
   return (

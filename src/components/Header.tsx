@@ -181,7 +181,7 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {isSubscribed ? (
-                    <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => window.open("https://billing.stripe.com/p/login/REPLACE_WITH_STRIPE_PORTAL", "_blank")}>
+                    <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => window.open("https://app.lemonsqueezy.com/my-orders", "_blank")}>
                       <CreditCard className="w-4 h-4" />
                       Manage Subscription
                     </DropdownMenuItem>
