@@ -1,25 +1,40 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Building2, X, Sparkles, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-const PAYMENT_LINK = "https://rayyans.lemonsqueezy.com/checkout/buy/31f59aba-0ec4-432d-bb74-fa8a398ae2eb";
+// Replace with your Paddle checkout link once approved
+const PAYMENT_LINK = "https://TODO_REPLACE_WITH_PADDLE_LINK";
+
+export const openCheckout = (email: string) => {
+  window.open(`${PAYMENT_LINK}?email=${encodeURIComponent(email)}`, "_blank");
+};
 
 type Props = {
   open: boolean;
   onClose: () => void;
+  autoTrigger?: boolean;
 };
 
-const UpgradeModal = ({ open, onClose }: Props) => {
+const UpgradeModal = ({ open, onClose, autoTrigger }: Props) => {
   const { user, signInWithGoogle } = useAuth();
+
+  // Auto-open checkout after OAuth redirect from upgrade flow
+  useEffect(() => {
+    if (open && autoTrigger && user?.email) {
+      openCheckout(user.email);
+    }
+  }, [open, autoTrigger, user]);
 
   if (!open) return null;
 
   const handleUpgrade = () => {
     if (!user) {
+      localStorage.setItem("pendingUpgrade", "true");
       signInWithGoogle();
       return;
     }
-    window.open(`${PAYMENT_LINK}?checkout[email]=${encodeURIComponent(user.email ?? "")}`, "_blank");
+    openCheckout(user.email ?? "");
   };
 
   return (
@@ -54,8 +69,8 @@ const UpgradeModal = ({ open, onClose }: Props) => {
         </div>
 
         <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-6 text-center">
-          <div className="text-3xl font-bold">$0.99<span className="text-base font-normal text-muted-foreground">/month</span></div>
-          <p className="text-xs text-muted-foreground mt-1">Cancel anytime</p>
+          <div className="text-3xl font-bold">$0.99<span className="text-base font-normal text-muted-foreground"> one-time</span></div>
+          <p className="text-xs text-muted-foreground mt-1">Lifetime access, pay once</p>
         </div>
 
         <Button onClick={handleUpgrade} className="w-full gap-2 font-bold py-5 text-base shadow-lg shadow-primary/20">
@@ -64,7 +79,7 @@ const UpgradeModal = ({ open, onClose }: Props) => {
         </Button>
 
         <p className="text-xs text-muted-foreground text-center mt-3">
-          Secure payment via Stripe. No hidden fees.
+          Secure payment via Paddle. No hidden fees.
         </p>
       </div>
     </div>

@@ -68,7 +68,7 @@ const PrivacyPolicy = () => {
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>Create and manage your account</li>
               <li>Verify your subscription status and grant access to Pro features</li>
-              <li>Process payments via Stripe</li>
+              <li>Process payments via Paddle</li>
               <li>Respond to support requests</li>
               <li>Operate, maintain, and improve the Site</li>
               <li>Detect and prevent abuse or fraudulent activity</li>

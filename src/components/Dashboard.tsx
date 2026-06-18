@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Building2, User, Sparkles, Trash2, Lock } from "lucide-react";
 import { toast } from "sonner";
@@ -146,14 +146,24 @@ const mergeCollected = (prev: CollectedItem[], incoming: CollectedItem[]): Colle
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const Dashboard = () => {
-  const { isSubscribed } = useAuth();
+  const { user, isSubscribed } = useAuth();
   const [urls, setUrls] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
   const [isOpening, setIsOpening] = useState(false);
   const [collectedData, setCollectedData] = useState<CollectedItem[]>([]);
   const [tabsOpened, setTabsOpened] = useState(0);
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [autoTriggerUpgrade, setAutoTriggerUpgrade] = useState(false);
   const editableRef = useRef<HTMLDivElement>(null);
+
+  // After Google OAuth from upgrade flow, auto-open checkout
+  useEffect(() => {
+    if (user && localStorage.getItem("pendingUpgrade") === "true") {
+      localStorage.removeItem("pendingUpgrade");
+      setAutoTriggerUpgrade(true);
+      setShowUpgrade(true);
+    }
+  }, [user]);
 
   // ── URL Extraction ──────────────────────────────────────────────────────────
   const extractUrls = useCallback((): string[] => {
@@ -643,7 +653,7 @@ const Dashboard = () => {
       </div>
     </section>
 
-    <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
+    <UpgradeModal open={showUpgrade} onClose={() => { setShowUpgrade(false); setAutoTriggerUpgrade(false); }} autoTrigger={autoTriggerUpgrade} />
     </>
   );
 };
