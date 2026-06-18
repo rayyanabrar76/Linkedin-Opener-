@@ -186,7 +186,7 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
                       Manage Subscription
                     </DropdownMenuItem>
                   ) : (
-                    <DropdownMenuItem className="cursor-pointer gap-2 text-primary" onClick={onGetStarted}>
+                    <DropdownMenuItem className="cursor-pointer gap-2 text-primary" onClick={() => window.dispatchEvent(new Event("openUpgradeModal"))}>
                       <Sparkles className="w-4 h-4" />
                       Upgrade to Pro
                     </DropdownMenuItem>

@@ -165,6 +165,13 @@ const Dashboard = () => {
     }
   }, [user]);
 
+  // Listen for header "Upgrade to Pro" click
+  useEffect(() => {
+    const handler = () => setShowUpgrade(true);
+    window.addEventListener("openUpgradeModal", handler);
+    return () => window.removeEventListener("openUpgradeModal", handler);
+  }, []);
+
   // ── URL Extraction ──────────────────────────────────────────────────────────
   const extractUrls = useCallback((): string[] => {
     if (!editableRef.current) return [];
