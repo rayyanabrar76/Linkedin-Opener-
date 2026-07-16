@@ -36,33 +36,28 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const ddgBang = (query: string) =>
   `https://duckduckgo.com/?q=!ducky+${encodeURIComponent(query)}`;
 
-/** Build the best email-hunting search query for an item.
- *  - Profiles: hunt the person's publicly listed email
- *  - Websites/companies/names: combined query — lands on a RocketReach-style
- *    "email format" page when one exists (big companies), or the company's
- *    contact page when it doesn't (small companies) */
+// ContactOut is a contact-database platform that publishes email pages for
+// people and companies. Pinning the lucky-jump to it keeps results on a real
+// data source instead of whatever SEO spam ranks #1 for a generic query.
+const EMAIL_SOURCE = "site:contactout.com";
+
+/** Build the best email-hunting search query for an item, landing on ContactOut.
+ *  - Person → hunt that individual's ContactOut page
+ *  - Company/website/name → the company's ContactOut email page */
 const emailQuery = (parsed: ParsedItem): string => {
   if (parsed.type === "profile") {
-    return `"${parsed.companyName}" email address contact`;
+    return `"${parsed.companyName}" email ${EMAIL_SOURCE}`;
   }
-  if (parsed.type === "url") {
-    const domain = parsed.website
-      .replace(/^https?:\/\//, "")
-      .replace(/^www\./, "")
-      .split("/")[0];
-    return `${domain} email format OR contact email`;
-  }
-  return `${parsed.companyName} email format OR contact email`;
+  return `${parsed.companyName} email ${EMAIL_SOURCE}`;
 };
 
-/** Search that hunts a company's CEO email/contact directly in one shot.
- *  Lands on RocketReach/ZoomInfo/SignalHire pages that often list the CEO's
- *  name and contact together. For profile inputs, hunt that person directly. */
+/** Search that hunts a company's CEO email via ContactOut. For a person,
+ *  hunt that individual directly. */
 const ceoEmailQuery = (parsed: ParsedItem): string => {
   if (parsed.type === "profile") {
-    return `"${parsed.companyName}" CEO email address contact`;
+    return `"${parsed.companyName}" email ${EMAIL_SOURCE}`;
   }
-  return `CEO of ${parsed.companyName} email address contact`;
+  return `${parsed.companyName} CEO email ${EMAIL_SOURCE}`;
 };
 
 /** Slugify a company/person name for a LinkedIn profile path: lowercase, spaces → hyphens */
