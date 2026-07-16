@@ -38,7 +38,7 @@ const App = () => (
     <TooltipProvider>
       {/* Global SEO Metadata */}
       <Helmet>
-        <title>Email Finder & CEO Email Finder - Free | LinkedIn Opener Pro</title>
+        <title>LinkedIn Opener Pro - Bulk LinkedIn Profile Opener</title>
         <meta name="description" content="Free email finder & CEO email finder. Find anyone's professional email, open LinkedIn profiles in bulk, find CEOs, and export leads to Excel — no sign-up required." />
 
         {/* Schema.org for Google Site Name */}
