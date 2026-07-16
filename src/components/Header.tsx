@@ -65,15 +65,13 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
           {/* 1. Left: Brand Logo */}
           <div className="flex-1 flex items-center">
             <a href="/" className="flex items-center gap-2 group shrink-0 min-w-0">
-              <div className="bg-primary/10 p-1 rounded-lg transition-all group-hover:rotate-12 group-hover:scale-110 shrink-0">
-                <img
-                  src="/logo.png"
-                  alt="LinkedIn Opener Pro logo"
-                  width={20}
-                  height={20}
-                  className="w-5 h-5 object-contain rounded"
-                />
-              </div>
+              <img
+                src="/logo.png"
+                alt="LinkedIn Opener Pro logo"
+                width={28}
+                height={28}
+                className="w-7 h-7 object-contain transition-all group-hover:scale-110 shrink-0"
+              />
               {/* Full name on sm+, abbreviated on xs */}
               <span className="font-bold tracking-tight whitespace-nowrap text-sm sm:text-base md:text-lg">
                 <span className="hidden xs:inline">LinkedIn Opener </span>
