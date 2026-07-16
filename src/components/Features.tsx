@@ -1,4 +1,4 @@
-import { Zap, Users, Target, Download, Search, List, Mail, MailSearch } from "lucide-react";
+import { Zap, Users, Target, Download, Search, List, Mail, MailSearch, ShieldCheck } from "lucide-react";
 
 const features = [
   {
@@ -40,6 +40,11 @@ const features = [
     icon: List,
     title: "Live Preview",
     description: "See exactly what will open before you click with categorized preview",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Free & Private",
+    description: "100% free with no sign-up — your lists stay in your browser and are never uploaded",
   },
 ];
 
