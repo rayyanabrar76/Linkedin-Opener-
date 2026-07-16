@@ -12,6 +12,7 @@ import {
   Search,
   FileDown,
   ArrowRight,
+  Mail,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
@@ -108,8 +109,8 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
                           <div><p className="text-sm font-semibold">Paste Links</p><p className="text-xs text-muted-foreground font-normal">Import your LinkedIn profile lists.</p></div>
                         </div>
                         <div className="flex gap-3 items-start group/step">
-                          <div className="mt-1 bg-purple-500/10 p-2 rounded-lg text-purple-500 group-hover/step:scale-110 transition-transform"><Search className="w-4 h-4"/></div>
-                          <div><p className="text-sm font-semibold">AI Enrichment</p><p className="text-xs text-muted-foreground font-normal">Detect job titles and decision-makers.</p></div>
+                          <div className="mt-1 bg-purple-500/10 p-2 rounded-lg text-purple-500 group-hover/step:scale-110 transition-transform"><Mail className="w-4 h-4"/></div>
+                          <div><p className="text-sm font-semibold">Find Emails & CEOs</p><p className="text-xs text-muted-foreground font-normal">Find emails, CEO emails, and decision-makers.</p></div>
                         </div>
                         <div className="flex gap-3 items-start group/step">
                           <div className="mt-1 bg-emerald-500/10 p-2 rounded-lg text-emerald-500 group-hover/step:scale-110 transition-transform"><FileDown className="w-4 h-4"/></div>

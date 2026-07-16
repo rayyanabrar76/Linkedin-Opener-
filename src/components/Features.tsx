@@ -1,10 +1,20 @@
-import { Zap, Users, Target, Download, Search, List } from "lucide-react";
+import { Zap, Users, Target, Download, Search, List, Mail, MailSearch } from "lucide-react";
 
 const features = [
   {
     icon: Zap,
     title: "Lightning Fast Bulk Opening",
     description: "Open 100+ LinkedIn profiles in under a minute with smart delay management",
+  },
+  {
+    icon: Mail,
+    title: "Email Finder",
+    description: "Find anyone's professional email — companies, profiles, or plain names — in one click",
+  },
+  {
+    icon: MailSearch,
+    title: "CEO Email Finder",
+    description: "Type a company name and instantly search for its CEO's email address",
   },
   {
     icon: Target,
@@ -19,7 +29,7 @@ const features = [
   {
     icon: Download,
     title: "Export to Spreadsheet",
-    description: "Download all your leads with working links ready for Google Sheets",
+    description: "Download all your leads with emails and working links ready for Excel & Google Sheets",
   },
   {
     icon: Search,

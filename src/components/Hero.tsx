@@ -33,7 +33,7 @@ const Hero = ({ onEnter }: HeroProps) => {
         <div className="animate-fade-in">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 mb-6">
             <Sparkles className="w-4 h-4" />
-            <span className="text-sm font-medium">Now with AI-Powered CEO Detection</span>
+            <span className="text-sm font-medium">Now with AI-Powered CEO & Email Detection</span>
           </div>
         </div>
 
@@ -45,7 +45,7 @@ const Hero = ({ onEnter }: HeroProps) => {
 
         <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10 animate-fade-up" style={{ animationDelay: "0.1s" }}>
           The ultimate productivity tool for recruiters, sales professionals, and networkers.
-          Instantly open multiple profiles, find CEOs, and supercharge your workflow.
+          Instantly find emails, find CEOs, open multiple profiles, and supercharge your workflow.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-up" style={{ animationDelay: "0.2s" }}>

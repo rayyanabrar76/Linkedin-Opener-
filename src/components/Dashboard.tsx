@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Building2, User, Sparkles, Trash2 } from "lucide-react";
+import { Building2, User, Sparkles, Trash2, Mail, MailSearch, Globe } from "lucide-react";
 import { toast } from "sonner";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -36,9 +36,49 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const ddgBang = (query: string) =>
   `https://duckduckgo.com/?q=!ducky+${encodeURIComponent(query)}`;
 
+/** Build the best email-hunting search query for an item.
+ *  - Profiles: hunt the person's publicly listed email
+ *  - Websites/companies/names: combined query — lands on a RocketReach-style
+ *    "email format" page when one exists (big companies), or the company's
+ *    contact page when it doesn't (small companies) */
+const emailQuery = (parsed: ParsedItem): string => {
+  if (parsed.type === "profile") {
+    return `"${parsed.companyName}" email address contact`;
+  }
+  if (parsed.type === "url") {
+    const domain = parsed.website
+      .replace(/^https?:\/\//, "")
+      .replace(/^www\./, "")
+      .split("/")[0];
+    return `${domain} email format OR contact email`;
+  }
+  return `${parsed.companyName} email format OR contact email`;
+};
+
+/** Search that hunts a company's CEO email/contact directly in one shot.
+ *  Lands on RocketReach/ZoomInfo/SignalHire pages that often list the CEO's
+ *  name and contact together. For profile inputs, hunt that person directly. */
+const ceoEmailQuery = (parsed: ParsedItem): string => {
+  if (parsed.type === "profile") {
+    return `"${parsed.companyName}" CEO email address contact`;
+  }
+  return `CEO of ${parsed.companyName} email address contact`;
+};
+
 /** Slugify a company/person name for a LinkedIn profile path: lowercase, spaces → hyphens */
 const slugify = (name: string) =>
   name.trim().toLowerCase().replace(/\s+/g, "-");
+
+/** Turn a LinkedIn profile slug into a readable name.
+ *  LinkedIn appends a random ID suffix to vanity URLs (e.g. "sara-galimberti-43422b250").
+ *  People's names don't contain digits, so drop any trailing chunk that has a number. */
+const cleanProfileSlug = (slug: string): string => {
+  const tokens = decodeURIComponent(slug).split("-").filter(Boolean);
+  while (tokens.length > 1 && /\d/.test(tokens[tokens.length - 1])) {
+    tokens.pop();
+  }
+  return tokens.join(" ");
+};
 
 const makeBlobUrl = (targetUrl: string): string => {
   const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${targetUrl}"></head></html>`;
@@ -102,9 +142,15 @@ const parseItem = (raw: string): ParsedItem => {
     TLDS.some((tld) => lower.includes(tld));
 
   if (raw.includes("linkedin.com/in/")) {
-    const slug = raw.split("linkedin.com/in/")[1]?.split(/[/?#]/)[0] ?? "";
-    const companyName = decodeURIComponent(slug).replace(/-/g, " ");
-    const ceoLinkedin = raw.startsWith("http") ? raw : `https://${raw}`;
+    // A #name= tag (added when the link used an opaque member ID) wins over the
+    // slug, which in that case is just an unreadable ID.
+    const nameTag = raw.match(/#name=([^&]+)/);
+    const cleanUrl = raw.split("#")[0];
+    const slug = cleanUrl.split("linkedin.com/in/")[1]?.split(/[/?#]/)[0] ?? "";
+    const companyName = nameTag
+      ? decodeURIComponent(nameTag[1])
+      : cleanProfileSlug(slug);
+    const ceoLinkedin = cleanUrl.startsWith("http") ? cleanUrl : `https://${cleanUrl}`;
     return { type: "profile", raw, companyName, website: "", linkedinCompany: "", ceoLinkedin };
   }
 
@@ -164,7 +210,24 @@ const Dashboard = () => {
     // 1. Extract from hyperlink hrefs
     editableRef.current.querySelectorAll("a[href]").forEach((link) => {
       const href = link.getAttribute("href");
-      if (href?.trim()) found.add(normalize(href));
+      if (!href?.trim()) return;
+      const url = normalize(href);
+      const text = (link.textContent ?? "").trim();
+
+      // LinkedIn profile links sometimes carry an opaque internal member ID
+      // (e.g. /in/ACoAAD34Rqg…) instead of a readable slug. That ID is useless
+      // for searching — so if the visible link text is a real name, use it.
+      const inMatch = url.match(/linkedin\.com\/in\/([^/?#]+)/i);
+      const isOpaqueId = inMatch ? /^ACoA[A-Za-z0-9_-]{8,}$/i.test(inMatch[1]) : false;
+      const looksLikeName = /[a-zA-Z]/.test(text) && text.includes(" ") && !/https?:\/\//i.test(text);
+
+      if (isOpaqueId && looksLikeName) {
+        // Keep the real profile URL (so "Open" works), but attach the readable
+        // name as a #name= tag so the parser can use it for search/display.
+        found.add(`${url}#name=${encodeURIComponent(text)}`);
+      } else {
+        found.add(url);
+      }
     });
 
     // 2. Extract from plain text if no hyperlinks
@@ -290,11 +353,85 @@ const Dashboard = () => {
     toast.success(`✅ Opened ${valid.length} CEO tabs in the background!`);
   };
 
+  // ── Email Finder Logic ──────────────────────────────────────────────────────
+  // Opens a smart search per item that surfaces publicly available emails and
+  // company email formats (e.g. "first.last@company.com — 92%"). No backend,
+  // same mechanic as the CEO finder.
+  const openAllEmails = async () => {
+    const valid = urls.map((u) => u.trim()).filter(Boolean);
+    if (valid.length === 0) {
+      toast.error("No company links or names found");
+      return;
+    }
+    if (valid.length > MAX_ITEMS) {
+      toast.error(`Too many items! Please paste ${MAX_ITEMS} or fewer at a time.`);
+      return;
+    }
+
+    setIsOpening(true);
+    setProgress(0);
+    setTabsOpened(0);
+
+    for (let i = 0; i < valid.length; i++) {
+      const parsed = parseItem(valid[i]);
+      openAndRevoke(makeBlobUrl(ddgBang(emailQuery(parsed))), true);
+
+      setTabsOpened(i + 1);
+      setProgress(Math.round(((i + 1) / valid.length) * 100));
+      await sleep(OPEN_DELAY_MS);
+    }
+
+    setIsOpening(false);
+    toast.success(`✅ Opened ${valid.length} email search tabs in the background!`);
+  };
+
+  // ── CEO Email Finder Logic ──────────────────────────────────────────────────
+  // Type a company name → one search that hunts the CEO's email/contact directly.
+  const openAllCEOEmails = async () => {
+    const valid = urls.map((u) => u.trim()).filter(Boolean);
+    if (valid.length === 0) {
+      toast.error("No company links or names found");
+      return;
+    }
+    if (valid.length > MAX_ITEMS) {
+      toast.error(`Too many items! Please paste ${MAX_ITEMS} or fewer at a time.`);
+      return;
+    }
+
+    setIsOpening(true);
+    setProgress(0);
+    setTabsOpened(0);
+
+    for (let i = 0; i < valid.length; i++) {
+      const parsed = parseItem(valid[i]);
+      openAndRevoke(makeBlobUrl(ddgBang(ceoEmailQuery(parsed))), true);
+
+      setTabsOpened(i + 1);
+      setProgress(Math.round(((i + 1) / valid.length) * 100));
+      await sleep(OPEN_DELAY_MS);
+    }
+
+    setIsOpening(false);
+    toast.success(`✅ Opened ${valid.length} CEO email search tabs in the background!`);
+  };
+
   // ── Single Item Actions ─────────────────────────────────────────────────────
   const openSingleCEO = (item: string) => {
     const parsed = parseItem(item);
     openAndRevoke(makeBlobUrl(ddgBang(`CEO of ${parsed.companyName} site:linkedin.com`)), true);
     toast.success(`Searching CEO of ${parsed.companyName}`);
+  };
+
+  const openSingleEmail = (item: string) => {
+    const parsed = parseItem(item);
+    openAndRevoke(makeBlobUrl(ddgBang(emailQuery(parsed))), true);
+    toast.success(`Searching email for ${parsed.companyName || item}`);
+  };
+
+  const openSingleProfile = (item: string) => {
+    const parsed = parseItem(item);
+    openAndRevoke(parsed.ceoLinkedin || (item.startsWith("http") ? item : `https://${item}`));
+    toast.success(`Opening ${parsed.companyName || item}`);
   };
 
   const openCompanyFromProfile = (profileUrl: string) => {
@@ -335,6 +472,8 @@ const Dashboard = () => {
       website: string;
       linkedinCompany: string;
       ceoLinkedin: string;
+      email: string;
+      ceoEmail: string;
     };
 
     const rows: LeadRow[] = [];
@@ -352,6 +491,8 @@ const Dashboard = () => {
           parsed.linkedinCompany ||
           `https://duckduckgo.com/?q=!ducky+${encodeURIComponent(name)}+LinkedIn+company+page`,
         ceoLinkedin: parsed.ceoLinkedin || ddgBang(`CEO of ${name} site:linkedin.com`),
+        email: ddgBang(emailQuery(parsed)),
+        ceoEmail: ddgBang(ceoEmailQuery(parsed)),
       });
 
       setProgress(Math.round(((i + 1) / valid.length) * 100));
@@ -360,11 +501,11 @@ const Dashboard = () => {
 
     // Header row + one display string per link cell; hyperlinks are patched in below.
     const ws = XLSX.utils.aoa_to_sheet([
-      ["Company Name", "Website", "LinkedIn Company Page", "CEO LinkedIn Profile"],
-      ...rows.map((r) => [r.companyName, "Website", "LinkedIn Company", "CEO LinkedIn"]),
+      ["Company Name", "Website", "LinkedIn Company Page", "CEO LinkedIn Profile", "Email Finder", "CEO Email"],
+      ...rows.map((r) => [r.companyName, "Website", "LinkedIn Company", "CEO LinkedIn", "Find Email", "Find CEO Email"]),
     ]);
 
-    // Attach native hyperlinks to columns B (website), C (company), D (CEO).
+    // Attach native hyperlinks to columns B (website), C (company), D (CEO), E (email), F (CEO email).
     rows.forEach((r, i) => {
       const excelRow = i + 2; // 1-indexed worksheet row, +1 for header
       const link = (target: string, tooltip: string) => ({
@@ -373,9 +514,11 @@ const Dashboard = () => {
       Object.assign(ws[`B${excelRow}`], link(r.website, `Open ${r.companyName} website`));
       Object.assign(ws[`C${excelRow}`], link(r.linkedinCompany, `${r.companyName} on LinkedIn`));
       Object.assign(ws[`D${excelRow}`], link(r.ceoLinkedin, `CEO of ${r.companyName} on LinkedIn`));
+      Object.assign(ws[`E${excelRow}`], link(r.email, `Find email for ${r.companyName}`));
+      Object.assign(ws[`F${excelRow}`], link(r.ceoEmail, `Find CEO email for ${r.companyName}`));
     });
 
-    ws["!cols"] = [{ wch: 30 }, { wch: 22 }, { wch: 25 }, { wch: 22 }];
+    ws["!cols"] = [{ wch: 30 }, { wch: 22 }, { wch: 25 }, { wch: 22 }, { wch: 18 }, { wch: 18 }];
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Leads");
@@ -441,6 +584,24 @@ const Dashboard = () => {
               >
                 <Building2 className="w-4 h-4 mr-2 shrink-0" />
                 {urls.filter(u => u.trim()).length <= 1 ? "Find CEO" : "Find CEOs"}
+              </Button>
+              <Button
+                onClick={openAllEmails}
+                disabled={isOpening || !hasValidInput}
+                variant="secondary"
+                className="shadow-lg w-full md:w-auto"
+              >
+                <Mail className="w-4 h-4 mr-2 shrink-0" />
+                {urls.filter(u => u.trim()).length <= 1 ? "Find Email" : "Find Emails"}
+              </Button>
+              <Button
+                onClick={openAllCEOEmails}
+                disabled={isOpening || !hasValidInput}
+                variant="secondary"
+                className="shadow-lg w-full md:w-auto"
+              >
+                <MailSearch className="w-4 h-4 mr-2 shrink-0" />
+                {urls.filter(u => u.trim()).length <= 1 ? "CEO Email" : "CEO Emails"}
               </Button>
               <Button
                 onClick={exportAllXLSX}
@@ -525,9 +686,23 @@ const Dashboard = () => {
                   <p className="text-muted-foreground text-sm">No links or company names detected yet</p>
                 ) : (
                   urls.map((url, i) => {
-                    const isCompany = url.includes("linkedin.com/company/");
-                    const isProfile = url.includes("linkedin.com/in/");
-                    const isGenericUrl = !isCompany && !isProfile;
+                    // Classify with the same parser the actions use, so the
+                    // preview label always matches what will actually happen.
+                    const parsed = parseItem(url);
+                    const isCompany = parsed.type === "company";
+                    const isProfile = parsed.type === "profile";
+                    const isWebsite = parsed.type === "url";
+                    const isName = parsed.type === "name";
+                    // Websites and plain names share the same action set.
+                    const isGenericUrl = isWebsite || isName;
+
+                    const typeLabel = isCompany
+                      ? "Company"
+                      : isProfile
+                      ? "Profile"
+                      : isWebsite
+                      ? "Website"
+                      : "Name";
 
                     return (
                       <div
@@ -539,15 +714,19 @@ const Dashboard = () => {
                             <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                           ) : isProfile ? (
                             <User className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                          ) : isWebsite ? (
+                            <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                           ) : (
                             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-xs sm:text-sm">
-                            {isCompany ? "Company" : isProfile ? "Profile" : "URL"} {i + 1}
+                          <div className="font-semibold text-xs sm:text-sm capitalize">
+                            {parsed.companyName || typeLabel}
                           </div>
-                          <div className="text-xs text-muted-foreground truncate">{url}</div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {typeLabel} · {url.split("#name=")[0]}
+                          </div>
                         </div>
 
                         {isCompany && (
@@ -565,6 +744,16 @@ const Dashboard = () => {
                             <Button
                               size="sm"
                               variant="ghost"
+                              onClick={() => openSingleEmail(url)}
+                              className="h-7 sm:h-8 px-2 text-xs"
+                              title="Find email"
+                            >
+                              <Mail className="w-3 h-3 mr-1" />
+                              Email
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
                               onClick={() => openProfileFromCompany(url)}
                               className="h-7 sm:h-8 px-2 text-xs"
                               title="View company profiles"
@@ -576,17 +765,39 @@ const Dashboard = () => {
                         )}
 
                         {isProfile && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => openCompanyFromProfile(url)}
-                            className="flex-shrink-0 h-7 sm:h-8 px-2 text-xs"
-                            title="Find company"
-                          >
-                            <Building2 className="w-3 h-3 mr-1" />
-                            <span className="hidden sm:inline">Company</span>
-                            <span className="sm:hidden">Co.</span>
-                          </Button>
+                          <div className="flex gap-1 flex-shrink-0">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => openSingleProfile(url)}
+                              className="h-7 sm:h-8 px-2 text-xs"
+                              title="Open profile"
+                            >
+                              <Sparkles className="w-3 h-3 mr-1" />
+                              Open
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => openCompanyFromProfile(url)}
+                              className="h-7 sm:h-8 px-2 text-xs"
+                              title="Find company"
+                            >
+                              <Building2 className="w-3 h-3 mr-1" />
+                              <span className="hidden sm:inline">Company</span>
+                              <span className="sm:hidden">Co.</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => openSingleEmail(url)}
+                              className="h-7 sm:h-8 px-2 text-xs"
+                              title="Find email"
+                            >
+                              <Mail className="w-3 h-3 mr-1" />
+                              Email
+                            </Button>
+                          </div>
                         )}
 
                         {isGenericUrl && (
@@ -610,6 +821,16 @@ const Dashboard = () => {
                             >
                               <Building2 className="w-3 h-3 mr-1" />
                               CEO
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => openSingleEmail(url)}
+                              className="h-7 sm:h-8 px-2 text-xs"
+                              title="Find email"
+                            >
+                              <Mail className="w-3 h-3 mr-1" />
+                              Email
                             </Button>
                           </div>
                         )}

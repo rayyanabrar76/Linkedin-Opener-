@@ -1,5 +1,5 @@
 import React from "react";
-import { ClipboardPaste, Zap, Download } from "lucide-react";
+import { ClipboardPaste, Mail, Download } from "lucide-react";
 
 const steps = [
   {
@@ -9,16 +9,16 @@ const steps = [
       "Copy and paste company names, LinkedIn URLs, or website links into the text box. Mix and match any format - the tool automatically detects what you've entered.",
   },
   {
-    icon: Zap,
-    title: "Step 2: Open All or Find CEOs",
+    icon: Mail,
+    title: "Step 2: Find Emails, CEOs & Open Profiles",
     description:
-      "Click 'Open All' to open all profiles instantly, or click 'Open All CEOs' to automatically search for and open CEO profiles for each company. Make sure your popup blocker is disabled.",
+      "Click 'Find Email' to search for anyone's professional email, or 'CEO Email' to find a company's CEO email in one click. You can also 'Open All' profiles or 'Find CEOs' on LinkedIn. Make sure your popup blocker is disabled.",
   },
   {
     icon: Download,
     title: "Step 3: Export Your Leads",
     description:
-      "Click 'Export TSV' to download a spreadsheet with all your data - company names, websites, LinkedIn pages, and CEO profiles with working links ready for Google Sheets.",
+      "Click 'Export Excel' to download a spreadsheet with all your data - company names, websites, LinkedIn pages, CEO profiles, and email search links ready for Excel & Google Sheets.",
   },
 ];
 
@@ -35,7 +35,7 @@ const HowItWorks: React.FC = () => {
         </h2>
         {/* Subheading */}
         <p className="text-lg text-gray-800 dark:text-gray-200 mb-12">
-          Three simple steps to transform your LinkedIn prospecting
+          Three simple steps to find emails and open LinkedIn profiles
         </p>
 
         {/* Steps */}

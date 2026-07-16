@@ -38,8 +38,8 @@ const App = () => (
     <TooltipProvider>
       {/* Global SEO Metadata */}
       <Helmet>
-        <title>LinkedIn Opener Pro - Bulk LinkedIn Profile Opener</title>
-        <meta name="description" content="LinkedIn Opener Pro helps you open multiple LinkedIn profiles instantly and find decision makers." />
+        <title>Email Finder & CEO Email Finder - Free | LinkedIn Opener Pro</title>
+        <meta name="description" content="Free email finder & CEO email finder. Find anyone's professional email, open LinkedIn profiles in bulk, find CEOs, and export leads to Excel — no sign-up required." />
 
         {/* Schema.org for Google Site Name */}
         <script type="application/ld+json">
@@ -53,8 +53,8 @@ const App = () => (
 
         {/* Open Graph Tags */}
         <meta property="og:site_name" content="LinkedIn Opener Pro" />
-        <meta property="og:title" content="LinkedIn Opener Pro" />
-        <meta property="og:description" content="Bulk LinkedIn Profile Opener & CEO Finder" />
+        <meta property="og:title" content="Email Finder & CEO Email Finder - Free | LinkedIn Opener Pro" />
+        <meta property="og:description" content="Find anyone's professional email free. CEO email finder, company email finder & bulk LinkedIn opener." />
         <meta property="og:type" content="website" />
       </Helmet>
 

@@ -8,9 +8,9 @@ const Footer = () => {
 
           {/* Brand */}
           <div>
-            <h3 className="font-bold text-lg mb-4 gradient-text">LinkedIn Bulk Opener</h3>
+            <h3 className="font-bold text-lg mb-4 gradient-text">Email Finder & LinkedIn Opener</h3>
             <p className="text-sm text-muted-foreground">
-              Open 100+ LinkedIn profiles in under a minute. Find CEOs automatically and export your leads instantly.
+              Find anyone's professional email, find CEO emails, open 100+ LinkedIn profiles in a minute, and export your leads instantly.
             </p>
           </div>
 
@@ -18,6 +18,8 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Features</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>Email Finder</li>
+              <li>CEO Email Finder</li>
               <li>Bulk Profile Opening</li>
               <li>Auto-Find CEOs</li>
               <li>Export to Spreadsheet</li>
