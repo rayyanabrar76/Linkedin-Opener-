@@ -574,7 +574,7 @@ const Dashboard = () => {
                 className="shadow-lg w-full md:w-auto"
               >
                 <Sparkles className="w-4 h-4 mr-2 shrink-0" />
-                Open All
+                {urls.filter(u => u.trim()).length <= 1 ? "Open" : "Open All"}
               </Button>
               <Button
                 onClick={openAllCEOs}
