@@ -36,28 +36,29 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const ddgBang = (query: string) =>
   `https://duckduckgo.com/?q=!ducky+${encodeURIComponent(query)}`;
 
-// ContactOut is a contact-database platform that publishes email pages for
-// people and companies. Pinning the lucky-jump to it keeps results on a real
-// data source instead of whatever SEO spam ranks #1 for a generic query.
-const EMAIL_SOURCE = "site:contactout.com";
+// Pin the lucky-jump to real contact databases instead of SEO spam.
+// Companies → ContactOut (good company/team pages). People → RocketReach
+// (strong individual profile pages with email formats).
+const COMPANY_SOURCE = "site:contactout.com";
+const PERSON_SOURCE = "site:rocketreach.co";
 
-/** Build the best email-hunting search query for an item, landing on ContactOut.
- *  - Person → hunt that individual's ContactOut page
+/** Build the best email-hunting search query for an item.
+ *  - Person → that individual's RocketReach page
  *  - Company/website/name → the company's ContactOut email page */
 const emailQuery = (parsed: ParsedItem): string => {
   if (parsed.type === "profile") {
-    return `"${parsed.companyName}" email ${EMAIL_SOURCE}`;
+    return `"${parsed.companyName}" email ${PERSON_SOURCE}`;
   }
-  return `${parsed.companyName} email ${EMAIL_SOURCE}`;
+  return `${parsed.companyName} email ${COMPANY_SOURCE}`;
 };
 
-/** Search that hunts a company's CEO email via ContactOut. For a person,
- *  hunt that individual directly. */
+/** Search that hunts a company's CEO email. For a person, hunt that individual
+ *  directly on RocketReach. */
 const ceoEmailQuery = (parsed: ParsedItem): string => {
   if (parsed.type === "profile") {
-    return `"${parsed.companyName}" email ${EMAIL_SOURCE}`;
+    return `"${parsed.companyName}" email ${PERSON_SOURCE}`;
   }
-  return `${parsed.companyName} CEO email ${EMAIL_SOURCE}`;
+  return `${parsed.companyName} CEO email ${COMPANY_SOURCE}`;
 };
 
 /** Slugify a company/person name for a LinkedIn profile path: lowercase, spaces → hyphens */

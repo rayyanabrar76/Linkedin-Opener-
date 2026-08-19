@@ -1,7 +1,7 @@
 const SITE_NAME = "LinkedIn Opener Pro";
 const SITE_URL = "https://profileopener.netlify.app/";
 const CONTACT_EMAIL = "rayyanabrar76@gmail.com";
-const EFFECTIVE_DATE = "June 11, 2026";
+const EFFECTIVE_DATE = "August 19, 2026";
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="mb-10">
@@ -41,7 +41,7 @@ const TermsOfService = () => {
             <p>
               {SITE_NAME} is a browser-based productivity tool that allows users to open multiple
               LinkedIn company and profile URLs simultaneously, search for company executives, and
-              export lead data to a spreadsheet. Some features require a paid subscription.
+              export lead data to a spreadsheet. The Site is provided for free and is supported by advertising.
             </p>
             <p>
               The tool operates within your browser. URLs and company names you enter are not
@@ -51,31 +51,12 @@ const TermsOfService = () => {
 
           <Section title="Accounts and Registration">
             <p>
-              To access Pro features, you must create an account by signing in with Google. You
+              To access certain features, you may need to create an account by signing in with Google. You
               are responsible for maintaining the security of your account and for all activity
               that occurs under it.
             </p>
             <p>
               We reserve the right to suspend or terminate accounts that violate these Terms.
-            </p>
-          </Section>
-
-          <Section title="Payments and Pro Access">
-            <p>
-              Certain features of {SITE_NAME} (including the CEO Finder and Excel Export) require
-              a one-time payment of $0.99 for lifetime Pro access. Payments are processed securely
-              by Paddle.com, who acts as the merchant of record for all transactions.
-            </p>
-            <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Pro access is granted immediately after successful payment</li>
-              <li>This is a one-time payment — no recurring charges</li>
-              <li>We offer a 7-day refund policy — contact us within 7 days of purchase for a full refund</li>
-              <li>Refund requests after 7 days will not be accepted</li>
-              <li>We reserve the right to change pricing for new customers with reasonable notice</li>
-            </ul>
-            <p>
-              For billing questions or refund requests, contact us at{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
             </p>
           </Section>
 
@@ -87,8 +68,8 @@ const TermsOfService = () => {
               <li>Use the Site to send unsolicited communications or to harass any individual</li>
               <li>Attempt to gain unauthorised access to any part of the Site or its systems</li>
               <li>Reverse-engineer or extract the source code of the Site</li>
-              <li>Share, resell, or transfer your subscription to another person</li>
               <li>Interfere with or disrupt the integrity or performance of the Site</li>
+              <li>Use ad-blockers in a manner that bypasses or interferes with the economic model of the Site, although we respect your right to use them.</li>
             </ul>
           </Section>
 
@@ -146,10 +127,6 @@ const TermsOfService = () => {
               <li>Unauthorised access to or alteration of your data</li>
               <li>Any other matter relating to the Site</li>
             </ul>
-            <p>
-              Our total liability to you for any claim shall not exceed the amount you paid us in
-              the 3 months preceding the claim.
-            </p>
           </Section>
 
           <Section title="Indemnification">

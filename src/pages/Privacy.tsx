@@ -1,7 +1,7 @@
 const SITE_NAME = "LinkedIn Opener Pro";
 const SITE_URL = "https://profileopener.netlify.app/";
 const CONTACT_EMAIL = "rayyanabrar76@gmail.com";
-const EFFECTIVE_DATE = "June 11, 2026";
+const EFFECTIVE_DATE = "August 19, 2026";
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="mb-10">
@@ -41,19 +41,12 @@ const PrivacyPolicy = () => {
               <strong className="text-foreground">Account information:</strong> When you sign in
               with Google, we receive your name, email address, and profile picture from Google.
               This information is stored securely via Supabase and is used solely to manage your
-              account and subscription.
+              account.
             </p>
             <p>
               <strong className="text-foreground">Tool usage data:</strong> Any LinkedIn URLs or
               company names you paste into the tool are processed entirely in your browser and are
               never transmitted to our servers.
-            </p>
-            <p>
-              <strong className="text-foreground">Payment information:</strong> Payments are
-              processed by Paddle.com. Paddle acts as the merchant of record and handles all
-              payment processing. We do not store your credit card number or payment details.
-              Paddle may collect and store payment information in accordance with their own
-              privacy policy at paddle.com/legal/privacy.
             </p>
             <p>
               <strong className="text-foreground">Automatically collected information:</strong>{" "}
@@ -67,8 +60,6 @@ const PrivacyPolicy = () => {
             <p>We use the information collected to:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>Create and manage your account</li>
-              <li>Verify your subscription status and grant access to Pro features</li>
-              <li>Process payments via Paddle</li>
               <li>Respond to support requests</li>
               <li>Operate, maintain, and improve the Site</li>
               <li>Detect and prevent abuse or fraudulent activity</li>
@@ -97,24 +88,39 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
-          <Section title="Payments">
+          <Section title="Advertising & Google AdSense">
             <p>
-              Payments are processed by Paddle.com, who acts as the merchant of record for all
-              transactions. When you purchase a Pro access, you will be redirected to a
-              Paddle-hosted checkout page. We receive confirmation of your payment from Paddle
-              via a secure webhook, which we use to activate your Pro access. We never see or
-              store your full payment card details.
+              We use Google AdSense to display advertisements on our Site. This helps us keep the
+              tool free for everyone.
             </p>
-            <p>
-              For questions about billing, contact us at{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
-            </p>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>
+                Third party vendors, including Google, use cookies to serve ads based on a user's 
+                prior visits to your website or other websites.
+              </li>
+              <li>
+                Google's use of advertising cookies enables it and its partners to serve ads to 
+                your users based on their visit to your sites and/or other sites on the Internet.
+              </li>
+              <li>
+                Users may opt out of personalized advertising by visiting{" "}
+                <a 
+                  href="https://www.google.com/settings/ads" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-primary hover:underline"
+                >
+                  Ads Settings
+                </a>.
+              </li>
+            </ul>
           </Section>
 
           <Section title="Cookies">
             <p>
               We use cookies and similar technologies to keep you signed in and to operate the
-              Site correctly. We do not use cookies for advertising purposes.
+              Site correctly. Our third-party advertising partners (like Google AdSense) also use 
+              cookies to serve personalized ads as described above.
             </p>
             <p>
               You can control cookies through your browser settings. Disabling cookies may prevent
@@ -127,11 +133,7 @@ const PrivacyPolicy = () => {
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>
                 <strong className="text-foreground">Supabase</strong> — our database and
-                authentication provider, which stores your account and subscription data
-              </li>
-              <li>
-                <strong className="text-foreground">Paddle</strong> — our merchant of record
-                and payment processor, which handles all billing and transactions
+                authentication provider, which stores your account data
               </li>
               <li>
                 <strong className="text-foreground">Legal authorities</strong> — when required
