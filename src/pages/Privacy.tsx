@@ -128,6 +128,23 @@ const PrivacyPolicy = () => {
             </p>
           </Section>
 
+          <Section title="Payments">
+            <p>
+              Paid upgrades are handled by Lemon Squeezy, which acts as the Merchant of
+              Record. When you buy an upgrade you are taken to Lemon Squeezy's checkout and
+              you give your payment details to them, not to us.
+            </p>
+            <p className="mt-3">
+              We never see or store your card number. Lemon Squeezy tells us only your email
+              address and that a payment succeeded, which is what we use to unlock the paid
+              features on your account. Lemon Squeezy processes your data under their own
+              privacy policy at{" "}
+              <a href="https://www.lemonsqueezy.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                lemonsqueezy.com/privacy
+              </a>.
+            </p>
+          </Section>
+
           <Section title="Data Sharing and Disclosure">
             <p>We may share information with:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">

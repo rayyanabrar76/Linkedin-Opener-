@@ -4,10 +4,24 @@ import { Building2, X, Sparkles, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 // Replace with your Paddle checkout link once approved
-const PAYMENT_LINK = "https://TODO_REPLACE_WITH_PADDLE_LINK";
+// Lemon Squeezy checkout. Set VITE_LEMON_CHECKOUT_URL in .env to the "Share"
+// link on the product page in Lemon Squeezy — it looks like
+// https://yourstore.lemonsqueezy.com/buy/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+const PAYMENT_LINK = import.meta.env.VITE_LEMON_CHECKOUT_URL as string;
 
 export const openCheckout = (email: string) => {
-  window.open(`${PAYMENT_LINK}?email=${encodeURIComponent(email)}`, "_blank");
+  if (!PAYMENT_LINK) {
+    alert("Checkout is not configured yet.");
+    return;
+  }
+  // The email is prefilled AND locked, because the webhook matches the payment
+  // to an account by email. If the buyer typed a different address at checkout
+  // the payment would arrive for an account that does not exist.
+  const url = new URL(PAYMENT_LINK);
+  url.searchParams.set("checkout[email]", email);
+  url.searchParams.set("checkout[custom][user_email]", email);
+  url.searchParams.set("embed", "0");
+  window.open(url.toString(), "_blank");
 };
 
 type Props = {

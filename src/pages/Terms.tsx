@@ -90,6 +90,24 @@ const TermsOfService = () => {
             </p>
           </Section>
 
+          <Section title="Purchases and Payment">
+            <p>
+              Paid upgrades are sold through Lemon Squeezy, who act as the Merchant of Record
+              for every order. Your contract for the purchase is with Lemon Squeezy, and they
+              handle payment, receipts, and any sales tax or VAT that applies where you live.
+            </p>
+            <p className="mt-3">
+              An upgrade is a one-time payment for a single user, not a subscription. Nothing
+              recurs and nothing is charged again unless you buy again. Access is unlocked on
+              the account belonging to the email address used at checkout, so please use the
+              same address you sign in with.
+            </p>
+            <p className="mt-3">
+              Refunds are covered by our refund policy. If an order is refunded or reversed,
+              access to the paid features ends.
+            </p>
+          </Section>
+
           <Section title="Intellectual Property">
             <p>
               All content on the Site — including text, graphics, logos, and software — is the

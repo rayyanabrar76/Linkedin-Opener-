@@ -61,9 +61,10 @@ const RefundPolicy = () => {
 
           <Section title="Payment Processing">
             <p>
-              All payments are processed by Paddle.com. Refunds will be returned to the original
-              payment method used at the time of purchase. Processing times may vary depending
-              on your bank or card issuer.
+              All payments are processed by Lemon Squeezy, which acts as the Merchant of
+              Record for this purchase. Your receipt and card statement will show Lemon
+              Squeezy rather than our name. Refunds are returned to the original payment
+              method and processing times may vary depending on your bank or card issuer.
             </p>
           </Section>
 
