@@ -8,6 +8,15 @@ import { useAuth } from "@/contexts/AuthContext";
 // https://yourstore.lemonsqueezy.com/buy/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 const PAYMENT_LINK = import.meta.env.VITE_LEMON_CHECKOUT_URL as string;
 
+/* Payments are OFF until this is set to "true".
+
+   Lemon Squeezy keeps a store in test mode until they approve it, and a test
+   checkout will happily take 4242 4242 4242 4242 and unlock the product for
+   nothing. On a site that already has visitors that is a door standing open,
+   so the checkout stays shut until the store is live. Set
+   VITE_PAYMENTS_LIVE=true on Netlify the day it is approved. */
+const PAYMENTS_LIVE = import.meta.env.VITE_PAYMENTS_LIVE === "true";
+
 export const openCheckout = (email: string) => {
   if (!PAYMENT_LINK) {
     alert("Checkout is not configured yet.");
@@ -55,6 +64,7 @@ const UpgradeModal = ({ open, onClose, autoTrigger }: Props) => {
   if (!open) return null;
 
   const handleUpgrade = async () => {
+    if (!PAYMENTS_LIVE) return;
     if (!user) {
       localStorage.setItem("pendingUpgrade", "true");
       try {
@@ -106,13 +116,21 @@ const UpgradeModal = ({ open, onClose, autoTrigger }: Props) => {
           <p className="text-xs text-muted-foreground mt-1">Lifetime access, pay once</p>
         </div>
 
-        <Button onClick={handleUpgrade} className="w-full gap-2 font-bold py-5 text-base shadow-lg shadow-primary/20">
+        <Button
+          onClick={handleUpgrade}
+          disabled={!PAYMENTS_LIVE}
+          className="w-full gap-2 font-bold py-5 text-base shadow-lg shadow-primary/20"
+        >
           <Sparkles className="w-4 h-4" />
-          {user ? "Upgrade Now" : "Sign In to Upgrade"}
+          {!PAYMENTS_LIVE
+            ? "Opening soon"
+            : user ? "Upgrade Now" : "Sign In to Upgrade"}
         </Button>
 
         <p className="text-xs text-muted-foreground text-center mt-3">
-          Secure payment via Lemon Squeezy. No hidden fees.
+          {PAYMENTS_LIVE
+            ? "Secure payment via Lemon Squeezy. No hidden fees."
+            : "Checkout is being set up — the export unlocks here in a day or two."}
         </p>
       </div>
     </div>
