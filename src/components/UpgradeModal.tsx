@@ -15,7 +15,7 @@ const PAYMENT_LINK = import.meta.env.VITE_LEMON_CHECKOUT_URL as string;
    nothing. On a site that already has visitors that is a door standing open,
    so the checkout stays shut until the store is live. Set
    VITE_PAYMENTS_LIVE=true on Netlify the day it is approved. */
-const PAYMENTS_LIVE = import.meta.env.VITE_PAYMENTS_LIVE === "true";
+export const PAYMENTS_LIVE = import.meta.env.VITE_PAYMENTS_LIVE === "true";
 
 export const openCheckout = (email: string) => {
   if (!PAYMENT_LINK) {
