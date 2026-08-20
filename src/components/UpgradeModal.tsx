@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Building2, X, Sparkles, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,11 +38,18 @@ const UpgradeModal = ({ open, onClose, autoTrigger }: Props) => {
     if (open && isSubscribed) onClose();
   }, [open, isSubscribed, onClose]);
 
-  // Auto-open checkout after OAuth redirect from upgrade flow
+  /* Auto-open checkout after the OAuth redirect.
+
+     Guarded by a ref because Supabase hands back a NEW user object every time
+     it refreshes the session, and this effect depends on it — without the
+     guard every refresh opened another checkout tab, so going back from the
+     payment page buried the browser in them. Once per visit is the whole
+     intent. */
+  const opened = useRef(false);
   useEffect(() => {
-    if (open && autoTrigger && user?.email) {
-      openCheckout(user.email);
-    }
+    if (!open || !autoTrigger || !user?.email || opened.current) return;
+    opened.current = true;
+    openCheckout(user.email);
   }, [open, autoTrigger, user]);
 
   if (!open) return null;
