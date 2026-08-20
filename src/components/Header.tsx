@@ -13,8 +13,10 @@ import {
   FileDown,
   ArrowRight,
   Mail,
+  UserRound,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -25,6 +27,7 @@ import {
 
 const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
   const { theme, setTheme } = useTheme();
+  const { user, isSubscribed, signInWithGoogle, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   
@@ -143,7 +146,29 @@ const Header = ({ onGetStarted }: { onGetStarted?: () => void }) => {
             >
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </Button>
-            
+
+            {user ? (
+              <Button
+                variant="ghost"
+                onClick={() => signOut()}
+                title={user.email ?? ""}
+                className="h-9 gap-2 text-sm font-medium hover:bg-primary/5 hidden sm:inline-flex"
+              >
+                <UserRound className="w-3.5 h-3.5 opacity-70" />
+                <span className="max-w-[120px] truncate">
+                  {isSubscribed ? "Pro" : "Sign out"}
+                </span>
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                onClick={() => signInWithGoogle()}
+                className="h-9 gap-2 text-sm font-medium hover:bg-primary/5 hidden sm:inline-flex"
+              >
+                <UserRound className="w-3.5 h-3.5 opacity-70" /> Sign in
+              </Button>
+            )}
+
 
             {/* Mobile Menu Toggle */}
             <Button variant="ghost" size="icon" aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={mobileOpen} className="md:hidden rounded-lg w-9 h-9 shrink-0" onClick={() => setMobileOpen(!mobileOpen)}>

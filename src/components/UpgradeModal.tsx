@@ -30,7 +30,13 @@ type Props = {
 };
 
 const UpgradeModal = ({ open, onClose, autoTrigger }: Props) => {
-  const { user, signInWithGoogle } = useAuth();
+  const { user, isSubscribed, signInWithGoogle } = useAuth();
+
+  // Someone who already paid and has just signed back in should not be left
+  // staring at a page asking them to buy it again.
+  useEffect(() => {
+    if (open && isSubscribed) onClose();
+  }, [open, isSubscribed, onClose]);
 
   // Auto-open checkout after OAuth redirect from upgrade flow
   useEffect(() => {
