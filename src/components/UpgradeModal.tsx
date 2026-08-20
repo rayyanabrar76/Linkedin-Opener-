@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Building2, X, Sparkles, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-// Replace with your Paddle checkout link once approved
 // Lemon Squeezy checkout. Set VITE_LEMON_CHECKOUT_URL in .env to the "Share"
 // link on the product page in Lemon Squeezy — it looks like
 // https://yourstore.lemonsqueezy.com/buy/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -93,7 +92,7 @@ const UpgradeModal = ({ open, onClose, autoTrigger }: Props) => {
         </Button>
 
         <p className="text-xs text-muted-foreground text-center mt-3">
-          Secure payment via Paddle. No hidden fees.
+          Secure payment via Lemon Squeezy. No hidden fees.
         </p>
       </div>
     </div>
