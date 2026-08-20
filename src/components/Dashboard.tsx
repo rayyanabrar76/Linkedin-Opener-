@@ -207,12 +207,47 @@ const Dashboard = () => {
     setResumeCheckout(true);
     setShowUpgrade(true);
   }, [user, isSubscribed]);
-  const [urls, setUrls] = useState<string[]>([]);
+  /* The typed list survives leaving the page.
+
+     Buying means going to Google and then to the checkout, so the tab is
+     navigated away twice. Coming back to an empty box after paying reads as
+     "it lost my work AND took my money", which is the worst possible first
+     impression of a paid feature. */
+  const [urls, setUrls] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem("openerList");
+      return saved ? (JSON.parse(saved) as string[]) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      if (urls.length) localStorage.setItem("openerList", JSON.stringify(urls));
+      else localStorage.removeItem("openerList");
+    } catch {
+      /* private mode or a full quota: not worth breaking the tool over */
+    }
+  }, [urls]);
   const [progress, setProgress] = useState(0);
   const [isOpening, setIsOpening] = useState(false);
   const [collectedData, setCollectedData] = useState<CollectedItem[]>([]);
   const [tabsOpened, setTabsOpened] = useState(0);
   const editableRef = useRef<HTMLDivElement>(null);
+
+  // The box is a contentEditable div read through this ref, so restoring the
+  // state is not enough — the text has to be written back into the DOM once,
+  // on the first render after coming back.
+  const restored = useRef(false);
+  useEffect(() => {
+    if (restored.current || !editableRef.current) return;
+    restored.current = true;
+    const saved = urls.filter(Boolean);
+    if (saved.length && !editableRef.current.innerText.trim()) {
+      editableRef.current.innerText = saved.join(String.fromCharCode(10));
+    }
+  }, [urls]);
 
   // ── URL Extraction ──────────────────────────────────────────────────────────
   const extractUrls = useCallback((): string[] => {
