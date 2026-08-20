@@ -2,6 +2,8 @@ import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Building2, User, Sparkles, Trash2, Mail, MailSearch, Globe } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import UpgradeModal from "@/components/UpgradeModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type CollectedItem = {
@@ -186,6 +188,8 @@ const mergeCollected = (prev: CollectedItem[], incoming: CollectedItem[]): Colle
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const Dashboard = () => {
+  const { isSubscribed } = useAuth();
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const [urls, setUrls] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
   const [isOpening, setIsOpening] = useState(false);
@@ -447,6 +451,14 @@ const Dashboard = () => {
   // Builds a real .xlsx with native, clickable hyperlinks via SheetJS — opens
   // directly in Excel/Google Sheets, no copy-paste step required.
   const exportAllXLSX = async () => {
+    // The paid feature. Everything else on this page stays free, because the
+    // free half is what brings people here in the first place; the export is
+    // what they reach for once the tool has already proved useful.
+    if (!isSubscribed) {
+      setShowUpgrade(true);
+      return;
+    }
+
     const valid = urls.map((u) => u.trim()).filter(Boolean);
     if (valid.length === 0) {
       toast.error("No data to export");
@@ -842,6 +854,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
     </section>
   );
 };
