@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
 // Index (landing page) is the entry point — keep it eagerly imported.
@@ -66,6 +67,11 @@ const App = () => (
         {/* Resets scroll to top on every page navigation */}
         <ScrollToTop />
 
+        {/* Everything that can sign in or check a subscription lives inside
+            this. Without it useAuth() returns the empty default context and
+            calling signInWithGoogle throws. */}
+
+        <AuthProvider>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             {/* Core Tool Route */}
@@ -92,6 +98,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </HelmetProvider>
