@@ -43,8 +43,8 @@ const features = [
   },
   {
     icon: ShieldCheck,
-    title: "Free & Private",
-    description: "100% free with no sign-up — your lists stay in your browser and are never uploaded",
+    title: "Private by design",
+    description: "Free to search and open — your lists stay in your browser and are never uploaded",
   },
 ];
 

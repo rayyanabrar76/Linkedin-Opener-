@@ -18,7 +18,7 @@ const steps = [
     icon: Download,
     title: "Step 3: Export Your Leads",
     description:
-      "Click 'Export Excel' to download a spreadsheet with all your data - company names, websites, LinkedIn pages, CEO profiles, and email search links ready for Excel & Google Sheets.",
+      "Click 'Export Excel' to download a spreadsheet with all your data - company names, websites, LinkedIn pages, CEO profiles, and email search links ready for Excel & Google Sheets. Exporting is a one-time $0.99 unlock; everything else stays free.",
   },
 ];
 
