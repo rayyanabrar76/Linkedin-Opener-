@@ -62,17 +62,17 @@ const UpgradeModal = ({ open, onClose, autoTrigger }: Props) => {
             <Building2 className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <h2 className="text-xl font-bold">Unlock CEO Finder</h2>
-            <p className="text-sm text-muted-foreground">Find decision-makers instantly</p>
+            <h2 className="text-xl font-bold">Unlock Excel Export</h2>
+            <p className="text-sm text-muted-foreground">Take your list with you</p>
           </div>
         </div>
 
         <div className="space-y-2.5 mb-6">
           {[
-            "Find CEOs of any company on LinkedIn",
-            "Bulk CEO search for 200 companies at once",
-            "Export leads to Excel with clickable links",
-            "Unlimited searches and exports, forever",
+            "Download your list as a .xlsx spreadsheet",
+            "Company, website, LinkedIn page and CEO profile in columns",
+            "Every link clickable in Excel and Google Sheets",
+            "Unlimited exports, forever — pay once",
           ].map((feat) => (
             <div key={feat} className="flex items-center gap-2 text-sm">
               <Check className="w-4 h-4 text-primary shrink-0" />
