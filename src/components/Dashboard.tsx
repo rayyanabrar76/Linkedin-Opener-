@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Building2, User, Sparkles, Trash2, Mail, MailSearch, Globe } from "lucide-react";
 import { toast } from "sonner";
@@ -188,8 +188,25 @@ const mergeCollected = (prev: CollectedItem[], incoming: CollectedItem[]): Colle
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const Dashboard = () => {
-  const { isSubscribed } = useAuth();
+  const { user, isSubscribed } = useAuth();
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [resumeCheckout, setResumeCheckout] = useState(false);
+
+  /* Coming back from Google.
+
+     Signing in navigates away to Google and returns to a fresh page, so the
+     popup the buyer pressed Upgrade on no longer exists and they land back on
+     the tool as if nothing happened. The flag set before leaving is picked up
+     here and the checkout is opened for them, which is what they asked for two
+     clicks ago. Nothing happens for someone who already paid. */
+  useEffect(() => {
+    if (!user) return;
+    if (localStorage.getItem("pendingUpgrade") !== "true") return;
+    localStorage.removeItem("pendingUpgrade");
+    if (isSubscribed) return;
+    setResumeCheckout(true);
+    setShowUpgrade(true);
+  }, [user, isSubscribed]);
   const [urls, setUrls] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
   const [isOpening, setIsOpening] = useState(false);
@@ -855,7 +872,11 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
+      <UpgradeModal
+        open={showUpgrade}
+        autoTrigger={resumeCheckout}
+        onClose={() => { setShowUpgrade(false); setResumeCheckout(false); }}
+      />
     </section>
   );
 };
